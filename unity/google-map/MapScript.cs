@@ -4,19 +4,18 @@ using System.Collections;
 
 public class MapScript : MonoBehaviour {
 
-    string url = "";
+    string url = ""; //will hold the completed  url request we make to the google maps api
 
-    public float lat =  24.917828f;
-    public float lon = 67.097096f;
-    LocationInfo li;
+    public float lat =  24.917828f; //Insert your desired latitude
+    public float lon = 67.097096f; //Insert your desired longitude
     public int zoom = 14;
     public int mapWidth = 640;
     public int mapHeight = 640;
-    public enum mapType { roadmap, satellite, hybrid, terrain };
+    public enum mapType { roadmap, satellite, hybrid, terrain }; //choose map type to display
     public mapType mapSelected;
     public int scale;
 
-    private bool loadingMap = false;
+    private bool loadingMap = false; //keeps track of whether we're waiting for a texture to load in case we want to display some sort of loading message while user waits for the map to load
 
     private IEnumerator mapCoroutine;
 
@@ -26,14 +25,13 @@ public class MapScript : MonoBehaviour {
         url = "https://maps.googleapis.com/maps/api/staticmap?center=" + lat + "," + lon +
             "&zoom=" + zoom + "&size=" + mapWidth + "x" + mapHeight + "&scale=" + scale
             +"&maptype=" + mapSelected +
-            "&key=AIzaSyAe7r_gW3WsdO5iY7LP2sg_gRrMIkDyksI";
+            "&key=[YOUR KEY HERE]";
         loadingMap = true;
-        WWW www = new WWW(url);
-        yield return www;
+        WWW www = new WWW(url); //make the new request
+        yield return www; //happens once we receive a response from the google maps api
         loadingMap = false;
-        //Assign downloaded map texture to Canvas Image
-        gameObject.GetComponent<RawImage>().texture = www.texture;
-        StopCoroutine (mapCoroutine);
+        gameObject.GetComponent<RawImage>().texture = www.texture; //assign downloaded map texture to Canvas Image
+        StopCoroutine (mapCoroutine); //stop the coroutine once we have the texture
 
     }
     void Start()
@@ -44,11 +42,11 @@ public class MapScript : MonoBehaviour {
 
     void Update(){
 
-        if (Input.GetKeyDown(KeyCode.M)) {
+        if (Input.GetKeyDown(KeyCode.M)) { //Example of how to update the map with a new set of coordinates
             lat = 40.6786806f;
             lon = -073.8644250f;
-            mapCoroutine = GetGoogleMap (lat, lon);
-            StartCoroutine (mapCoroutine);
+            mapCoroutine = GetGoogleMap (lat, lon); //redefine the coroutine with the new map coordinates (might be a better way to do this...let me know!)
+            StartCoroutine (mapCoroutine); //restart the coroutine
         }
     }
 }
